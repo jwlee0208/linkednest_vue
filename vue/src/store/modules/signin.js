@@ -1,14 +1,20 @@
+/* import router from "@/router"
 import axios from "axios";
 import vueCookie from 'vue-cookie';
-import {login} from 'vuex';
+import vuex from 'vuex';
+
+ */
+import router from "@/router";
+import axios from "axios";
+import vueCookie from 'vue-cookie';
+// import {axiosCall} from '@/axios/index.js'
 
 const axiosCall = axios.create({
-    baseURL: process.env.VUE_APP_API_URL, 
+    baseURL: process.env.VUE_APP_API_URL
 });
 
-export const userStore = {
+export const authStore = {
     state : {
-        host : 'http://127.0.0.1:9090',
         accessToken : '',
         refreshToken : ''
     },
@@ -29,29 +35,24 @@ export const userStore = {
     getters: {
         getToken(state) {
             let at = vueCookie.get('accessToken');
-            // let rt = vueCookie.get('refreshToken');
-            
             return {
                 access : at
-                // access : at, refresh : rt
             };
         }
     },
     actions : {
-        login : ({commit}, params) => {
-            return new Promise((resolve, reject) => {
-                axiosCall.post('/login', params).then(res => {
-                    commit('loginToken', res.data.token);
-                    resolve(res);    
-                }).
-                catch(err => {
-                    reject(err.message);    
-                })
-            });
-        },
+        login (state, params) {
+            axiosCall.post('/login', params).then(res => {
+                this.commit('loginToken', res.data.token);
+                router.push("/");
+            })                
+        },        
         refreshToken : ({commit}) => {
             return new Promise((resolve, reject) => {
-
+                axiosCall.post('/refreshToken', params).then(res => {
+                    commit('refreshToken', res.data.token);
+                    resolve(res);
+                })        
             });
         },
         logout : ({commit}) => {
@@ -59,6 +60,6 @@ export const userStore = {
             location.reload();    
         }
     }
-}
+};
 
-export default userStore
+// export default authStore

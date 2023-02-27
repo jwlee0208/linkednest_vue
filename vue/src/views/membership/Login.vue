@@ -20,16 +20,16 @@
 </template>
 
 <script>
-import router from '@/router';
+
+import { computed } from 'vue';
 import { login } from '@/api/index.js';
-// import { login } from '@/store/signin.js';
 import { validEmailAddr } from '@/utils/validation.js';
-import VueCookies from 'vue-cookie';
-import {createStore} from 'vuex';
-import {userStore} from '@/store/signin.js';
+import vueCookie from 'vue-cookie';
+// import vuex from 'vuex';
+import store from '@/store';
+// import router from '@/router';
 
 const regext = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
 
 export default {
     valid: true,
@@ -55,13 +55,15 @@ export default {
                     password : this.password,
                 }
 
-                login(userData).then(res => {
+                store.dispatch('login', userData);
+
+/*                 login(userData).then(res => {
                     if (res.status == 200) {
-                        VueCookies.set('token', res.data.token);
+                        store.commit('loginToken', res.data);
                         this.$router.push('/');
                     }
                 });
-                // console.log('login result : ' + login(userData));
+ */                // console.log('login result : ' + login(userData));
                                 
             } catch (error) {
                 // this.logMessage = error.response.data;
